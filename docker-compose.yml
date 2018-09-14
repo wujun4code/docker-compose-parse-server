@@ -1,0 +1,50 @@
+version: '3'
+services:
+  mongo:
+    image: 'mongo:latest'
+    volumes:
+      - './data/db:/data/db'
+    ports:
+      - 27017:27017
+  parse:
+    image: 'parseplatform/parse-server:latest'
+    environment:
+      - PARSE_SERVER_APPLICATION_ID=bas
+      - PARSE_SERVER_MASTER_KEY=bas@master123!
+      - PARSE_SERVER_DATABASE_URI=mongodb://mongo:27017/bas
+      - PARSE_SERVER_MOUNT_PATH=/bas
+    ports:
+      - '1337:1337'
+    links:
+      - mongo
+  parse-dashboard:
+    image: 'parseplatform/parse-dashboard'
+    ports:
+      - '4040:4040'
+    environment:
+      - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=true
+      - PARSE_DASHBOARD_SERVER_URL=http://localhost:1337/bas
+      - PARSE_DASHBOARD_MASTER_KEY=bas@master123!
+      - PARSE_DASHBOARD_APP_ID=bas
+      - PARSE_DASHBOARD_APP_NAME=BAS
+      - PARSE_DASHBOARD_USER_ID=wujun
+      - PARSE_DASHBOARD_USER_PASSWORD=basp@ssword
+  nginx:
+    image: 'nginx:latest'
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - './nginx:/etc/nginx/sites-enabled'
+      - './nginx/default.conf:/etc/nginx/conf.d/default.conf'
+    links:
+      - parse-dashboard
+      - parse
+# volumes:
+#   db:
+#     driver: local
+#   web:
+#     driver: local
+# networks:
+#   backend:
+#     driver: "bridge"
