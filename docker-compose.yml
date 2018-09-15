@@ -23,12 +23,14 @@ services:
       - '4040:4040'
     environment:
       - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=true
-      - PARSE_DASHBOARD_SERVER_URL=http://localhost:1337/bas
+      - PARSE_DASHBOARD_SERVER_URL=/api/bas
       - PARSE_DASHBOARD_MASTER_KEY=bas@master123!
       - PARSE_DASHBOARD_APP_ID=bas
       - PARSE_DASHBOARD_APP_NAME=BAS
       - PARSE_DASHBOARD_USER_ID=wujun
       - PARSE_DASHBOARD_USER_PASSWORD=basp@ssword
+    links:
+      - parse
   nginx:
     image: 'nginx:latest'
     ports:
@@ -43,11 +45,3 @@ services:
     links:
       - parse-dashboard
       - parse
-# volumes:
-#   db:
-#     driver: local
-#   web:
-#     driver: local
-# networks:
-#   backend:
-#     driver: "bridge"

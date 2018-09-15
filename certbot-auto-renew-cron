@@ -1,0 +1,1 @@
+15 2 * */2 * certbot renew --pre-hook "sudo docker-compose stop" --post-hook "sudo docker-compose up -d"
